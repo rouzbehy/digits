@@ -5,7 +5,7 @@ from sklearn.model_selection import KFold
 import models
 ## Hide GPU from visible devices
 ## tf is much faster on CPUS when running on an M1 Mac
-tf.config.set_visible_devices([], 'GPU')
+#tf.config.set_visible_devices([], 'GPU')
 
 (x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
 # reshape dataset to have a single channel
@@ -24,15 +24,16 @@ print(f"shape of x_test: {x_test.shape}")
 
 shape = (None,28,28,1)
 
-model = models.ConvModel(shape)
+model = models.ConvModel(shape, 64)
+
 model.compile(optimizer= 'adam', 
               loss     = 'categorical_crossentropy',
               metrics  = ['accuracy'])
 
-model.fit(x_train, y_train,
-                epochs=1,
+history = model.fit(x_train, y_train,
+                epochs=50,
                 shuffle=True,
                 validation_data=(x_test, y_test),
-                batch_size=32)
-
-print(model.summary())
+                batch_size=512)
+models.plot_utility(history)
+plt.show()
